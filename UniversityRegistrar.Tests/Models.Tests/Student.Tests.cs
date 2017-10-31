@@ -22,6 +22,7 @@ namespace UniversityRegistrar.Models.Tests
     [TestMethod]
     public void ClearAll_ClearsAllCateogryAssociationsFromDatabase_0()
     {
+      //Arrange
       List<Student> testList = new List<Student>();
       Student studentA = new Student("Alex","test");
       Student studentB = new Student("Bob","test");
@@ -29,15 +30,34 @@ namespace UniversityRegistrar.Models.Tests
       testList.Add(studentA);
       testList.Add(studentB);
       testList.Add(studentC);
-
       studentA.Save();
       studentB.Save();
       studentC.Save();
 
-      //Student.ClearAll();
+      //Act
+      Student.ClearAll();
       List<Student> resultList = Student.GetAll();
-      Console.WriteLine(resultList.Count+" : "+testList.Count);
-      CollectionAssert.AreEqual(resultList,testList);
+      //Test
+      //Console.WriteLine(resultList.Count+" : "+testList.Count);
+      Assert.AreEqual(true,resultList.Count==0);
     }
+
+    [TestMethod]
+    public void Save_SaveStudent()
+    {
+      //Arrange
+      Student testStudent = new Student("test-name","test-date");
+      //Act
+      testStudent.Save();
+      //Test
+      // foreach(Student s in Student.GetAll())
+      // {
+      //   Console.WriteLine("* Student ID: "+s.Id+" *");
+      //   Console.WriteLine("* Student Name: "+s.Name+" *");
+      //   Console.WriteLine("* Student Enrollment Date: "+s.EnrollmentDate+" *");
+      // }
+      Assert.AreEqual(true,Student.GetAll().Count==1);
+    }
+
   }
 }
