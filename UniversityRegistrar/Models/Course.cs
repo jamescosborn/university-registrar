@@ -14,7 +14,7 @@ namespace UniversityRegistrar.Models
         conn.Open();
 
         var cmd = conn.CreateCommand() as MySqlCommand;
-        cmd.CommandText = @"DELETE FROM _database;";
+        cmd.CommandText = @"DELETE FROM courses;";
         cmd.ExecuteNonQuery();
 
         conn.Close();

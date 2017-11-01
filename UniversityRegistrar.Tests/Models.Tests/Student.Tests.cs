@@ -59,5 +59,31 @@ namespace UniversityRegistrar.Models.Tests
       Assert.AreEqual(true,Student.GetAll().Count==1);
     }
 
+    [TestMethod]
+    public void Find_FindsStudentInDatabase_Category()
+    {
+      Student testStudent = new Student("Ronnie", "Nov. 1, 2004");
+      testStudent.Save();
+
+      Student foundStudent = Student.Find(1);
+      // Console.WriteLine("* Student ID: "+ testStudent.Id +" *");
+      Assert.AreEqual(testStudent, foundStudent);
+    }
+
+    [TestMethod]
+    public void Delete_DeleteStudentInDatabase_0()
+    {
+      int newID = 1;
+      Student testStudent = new Student("Ronnie", "Nov. 1, 2004");
+      testStudent.Save();
+      int numOfStudents = Student.GetAll().Count;
+
+      Student foundStudent = Student.Find(newID);
+      // Console.WriteLine("* Student ID: "+ testStudent.Id +" *");
+      Student.Delete(newID);
+      Assert.AreEqual(true, numOfStudents==Student.GetAll().Count);
+    }
+
+
   }
 }

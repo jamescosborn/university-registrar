@@ -97,7 +97,7 @@ namespace UniversityRegistrar.Models
       conn.Open();
 
       var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"DELETE FROM students;";
+      cmd.CommandText = @"DELETE FROM students; ALTER TABLE students AUTO_INCREMENT = 1;";
       cmd.ExecuteNonQuery();
 
       conn.Close();
@@ -106,5 +106,93 @@ namespace UniversityRegistrar.Models
         conn.Dispose();
       }
     }
+    public static void Delete(int searchId = 0)
+    {
+      if (searchId > 0)
+      {
+        MySqlConnection conn = DB.Connection();
+        conn.Open();
+
+        MySqlCommand cmd = conn.CreateCommand();
+        cmd.CommandText = @"DELETE FROM students WHERE id = @thisId;";
+        conn.Close();
+        if (conn != null)
+        {
+          conn.Dispose();
+        }
+      }
+      return;
+    }
+
+    public static Student Find(int searchId = 0)
+    {
+      if (searchId > 0)
+      {
+        MySqlConnection conn = DB.Connection();
+        conn.Open();
+
+        MySqlCommand cmd = conn.CreateCommand();
+        cmd.CommandText = @"SELECT * FROM students WHERE id = @thisId;";
+
+        MySqlParameter thisId = new MySqlParameter();
+        thisId.ParameterName = "@thisId";
+        thisId.Value = searchId;
+        cmd.Parameters.Add(thisId);
+
+        string studentName = "";
+        string studentEnrollmentDate = "";
+
+        var rdr = cmd.ExecuteReader() as MySqlDataReader;
+        while(rdr.Read())
+        {
+          searchId = rdr.GetInt32(0);
+          studentName = rdr.GetString(1);
+          studentEnrollmentDate = rdr.GetString(2);
+        }
+
+        Student foundStudent = new Student(studentName, studentEnrollmentDate, searchId);
+
+        conn.Close();
+        if (conn != null)
+        {
+          conn.Dispose();
+        }
+        return foundStudent;
+      }
+      Student errStudent = new Student("ERR","ERR",0);
+      return errStudent;
+    }
+
+    public void Update(string name="", string enrollmentDate="")
+    {
+      if(!String.IsNullOrEmpty(name))
+      {this.Name = name;}
+      if(!String.IsNullOrEmpty(enrollmentDate))
+      {this.EnrollmentDate = enrollmentDate;}
+
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      MySqlCommand cmd = conn.CreateCommand();
+      cmd.CommandText = @"SET @name, @enrollmentDate FROM students WHERE id = @thisId;";
+
+      MySqlParameter thisName = new MySqlParameter();
+      thisName.ParameterName = "@name";
+      thisName.Value = this.Name;
+      cmd.Parameters.Add(thisName);
+
+      MySqlParameter thisEnrollmentDate = new MySqlParameter();
+      thisEnrollmentDate.ParameterName = "@enrollmentDate";
+      thisEnrollmentDate.Value = this.EnrollmentDate;
+      cmd.Parameters.Add(thisEnrollmentDate);
+
+        conn.Close();
+        if (conn != null)
+        {
+          conn.Dispose();
+        }
+      return;
+    }
+
   }
 }
