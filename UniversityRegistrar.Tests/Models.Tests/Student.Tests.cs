@@ -20,7 +20,7 @@ namespace UniversityRegistrar.Models.Tests
     }
 
     [TestMethod]
-    public void ClearAll_ClearsAllCateogryAssociationsFromDatabase_0()
+    public void ClearAll_ClearsAllStudentsFromDatabase_0()
     {
       //Arrange
       List<Student> testList = new List<Student>();
