@@ -263,5 +263,9 @@ namespace UniversityRegistrar.Models
 
       return isTakingCourses;
     }
+    public List<Course> GetSchedule()
+    {
+      
+    }
   }
 }

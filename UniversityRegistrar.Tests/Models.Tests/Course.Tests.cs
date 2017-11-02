@@ -92,8 +92,13 @@ namespace UniversityRegistrar.Models.Tests
       Student studentC = new Student("Charlie","test");
       studentC.Save();
 
+      foreach (Course  c in Course.GetAll())
+      {
+        foreach (Student s in c.GetRoster())
+        {Console.WriteLine(s.Name +" : "+ c.CourseName);}
+      }
       Assert.AreEqual(studentA.IsRegistered(),studentB.IsRegistered());
-      Assert.AreEqual(!studentA.IsRegistered(),studentC.IsRegistered());ß
+      Assert.AreEqual(!studentA.IsRegistered(),studentC.IsRegistered());
       Assert.AreEqual(2,courseA.GetRoster().Count);
     }
   }
