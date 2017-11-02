@@ -213,5 +213,32 @@ namespace UniversityRegistrar.Models
       {conn.Dispose();}
       return classRoster;
     }
+
+    public bool IsActive()
+    {
+      bool isActive = false;
+
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      MySqlCommand cmd = conn.CreateCommand();
+      cmd.CommandText  = @"SELECT * FROM students_courses JOIN courses  ON(students_courses.course_id=courses.id) WHERE course_id = @thisCourse;";
+
+      MySqlParameter thisCourse = new MySqlParameter();
+      thisCourse.ParameterName  = "@thisCourse";
+      thisCourse.Value          = this.Id;
+      cmd.Parameters.Add(thisCourse);
+
+      MySqlDataReader rdr = cmd.ExecuteReader();
+      if(rdr.Read())
+      {
+        isActive = true;
+      }
+      conn.Close();
+      if (conn!=null)
+      {conn.Dispose();}
+      return isActive;
+    }
+    
   }
 }

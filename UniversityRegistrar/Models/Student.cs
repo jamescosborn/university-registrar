@@ -265,7 +265,28 @@ namespace UniversityRegistrar.Models
     }
     public List<Course> GetSchedule()
     {
-      
+      List<Course> studentSchedule = new List<Course>();
+
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      MySqlCommand cmd = conn.CreateCommand();
+      cmd.CommandText = @"SELECT * FROM students_courses JOIN courses ON(students_courses.course_id=courses.id) WHERE student_id = @studentId;";
+
+      MySqlParameter studentId = new MySqlParameter();
+      studentId.ParameterName = "@studentId";
+      studentId.Value = this.Id;
+      cmd.Parameters.Add(studentId);
+
+      MySqlDataReader rdr = cmd.ExecuteReader();
+
+        while (rdr.Read())
+        { studentSchedule.Add(new Course(rdr.GetString(4),rdr.GetString(5),rdr.GetInt32(3))); }
+
+        conn.Close();
+        if (conn!=null)
+        {conn.Dispose();}
+
+        return studentSchedule;
     }
   }
 }

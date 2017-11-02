@@ -98,8 +98,10 @@ namespace UniversityRegistrar.Models.Tests
         {Console.WriteLine(s.Name +" : "+ c.CourseName);}
       }
       Assert.AreEqual(studentA.IsRegistered(),studentB.IsRegistered());
-      Assert.AreEqual(!studentA.IsRegistered(),studentC.IsRegistered());
+      Assert.AreEqual(false,studentC.IsRegistered());
       Assert.AreEqual(2,courseA.GetRoster().Count);
     }
+
+    
   }
 }
