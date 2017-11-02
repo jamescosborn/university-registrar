@@ -97,7 +97,7 @@ namespace UniversityRegistrar.Models
       conn.Open();
 
       var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"DELETE FROM students; ALTER TABLE students AUTO_INCREMENT = 1;";
+      cmd.CommandText = @"DELETE FROM students; ALTER TABLE students AUTO_INCREMENT = 1; DELETE FROM students_courses; ALTER TABLE students_courses AUTO_INCREMENT = 1;";
       cmd.ExecuteNonQuery();
 
       conn.Close();
@@ -114,7 +114,15 @@ namespace UniversityRegistrar.Models
         conn.Open();
 
         MySqlCommand cmd = conn.CreateCommand();
-        cmd.CommandText = @"DELETE FROM students WHERE id = @thisId;";
+        cmd.CommandText = @"DELETE FROM students WHERE id = @thisId; DELETE FROM students_courses WHERE student_id = @thisId;";
+
+        MySqlParameter thisId = new MySqlParameter();
+        thisId.ParameterName = "@thisId";
+        thisId.Value = searchId;
+        cmd.Parameters.Add(thisId);
+
+        cmd.ExecuteNonQuery();
+
         conn.Close();
         if (conn != null)
         {
@@ -194,5 +202,66 @@ namespace UniversityRegistrar.Models
       return;
     }
 
+    public void Register(int id)
+    {
+      if (id>0)
+      {
+        MySqlConnection conn = DB.Connection();
+        conn.Open();
+
+        MySqlCommand cmd = conn.CreateCommand();
+        cmd.CommandText  = @"INSERT INTO students_courses (student_id , course_id) VALUES (@studentId , @courseId);";
+
+        MySqlParameter studentId = new MySqlParameter();
+        studentId.ParameterName  = "@studentId";
+        studentId.Value          = this.Id;
+        cmd.Parameters.Add(studentId);
+
+        MySqlParameter courseId = new MySqlParameter();
+        courseId.ParameterName  = "@courseId";
+        courseId.Value          = id;
+        cmd.Parameters.Add(courseId);
+
+        cmd.ExecuteNonQuery();
+
+        conn.Close();
+        if (conn!=null)
+        {conn.Dispose();}
+      }
+    }
+    public void Register(string crn)
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      conn.Close();
+      if (conn!=null)
+      {conn.Dispose();}
+    }
+    public bool IsRegistered()
+    {
+      bool isTakingCourses = false;
+
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      MySqlCommand cmd = conn.CreateCommand();
+      cmd.CommandText = @"SELECT * FROM students_courses WHERE student_id = @studentId;";
+
+      MySqlParameter studentId = new MySqlParameter();
+      studentId.ParameterName = "@studentId";
+      studentId.Value = this.Id;
+      cmd.Parameters.Add(studentId);
+
+      MySqlDataReader rdr = cmd.ExecuteReader();
+
+        if (rdr.Read())
+        { isTakingCourses = true; }
+
+      conn.Close();
+      if (conn!=null)
+      {conn.Dispose();}
+
+      return isTakingCourses;
+    }
   }
 }
